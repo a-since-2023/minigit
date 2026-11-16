@@ -1,4 +1,4 @@
-# MiniGit — B.Tech C++ OOP Final Project (Linux Shell Edition)
+# MiniGit —  C++ OOP Project (Linux Shell Edition)
 
 
 REport details 
@@ -77,27 +77,5 @@ student@minigit:~/workspace (master | HEAD:no-commits +1 staged)$ minigit commit
 student@minigit:~/workspace (master | HEAD:9c2d1f44)$ minigit log
 ```
 
----
-
-## 3. Viva Voce Quick Reference (OOP Concepts Used)
-
-1. **Abstraction**:
-   - `GitObject` (`include/GitObjects.hpp`) is an **abstract base class** with pure virtual methods `virtual void display() const = 0;` and `virtual std::string getType() const = 0;`.
-2. **Inheritance**:
-   - `FileBlob` and `Commit` publicly inherit from `GitObject`.
-   - `MiniGitException` publicly inherits from `std::runtime_error`.
-3. **Runtime Polymorphism**:
-   - Demonstrated via `minigit objects` (`Repository::showObjectsPolymorphic()`), where a `std::vector<const GitObject*>` holds both `FileBlob*` and `Commit*` pointers and calls `objects[i]->display()` dynamically at runtime.
-4. **Encapsulation**:
-   - All class attributes (`id`, `fileName`, `content`, `files`, `head`, `stagedFiles`) are `private` or `protected` and accessed strictly through public methods.
-5. **Raw Pointers & Dynamic Memory (`new` / `delete`)**:
-   - `Commit` dynamically allocates `FileBlob** files = new FileBlob*[capacity]` and cleans up every pointer in `~Commit()`.
-   - `Repository` maintains a **singly linked list of commits** (`Commit* head`), freeing the entire chain in `~Repository()`.
-   - `Commit(const Commit& other)` implements a **Deep Copy Constructor** (Rule of Three) so copying a commit duplicates all underlying `FileBlob` objects.
-6. **Operator Overloading**:
-   - `bool FileBlob::operator==(const FileBlob& other) const` — compares whether a working file matches its committed snapshot.
-   - `friend std::ostream& operator<<(std::ostream& os, const Commit& commit)` — prints formatted commit details directly with `std::cout << *curr;`.
-7. **Exception Handling**:
-   - Custom `MiniGitException` is thrown when a file is missing, repository isn't initialized, or nothing is staged, and caught cleanly inside the shell loop.
 8. **File Handling (`<fstream>`)**:
    - Stores human-readable metadata inside `.minigit/index.txt`, `.minigit/commits.txt`, `.minigit/remote.txt`, and file snapshots in `.minigit/objects/<hash>.blob`.
